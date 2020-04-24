@@ -13,7 +13,7 @@ public class Main extends Application {
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root,400,400);
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("JavaFX First test title");
+			primaryStage.setTitle("JavaFX First test title ");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
