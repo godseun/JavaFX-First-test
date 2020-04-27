@@ -66,10 +66,6 @@ public class TransferController implements Initializable{
 		availableMarketListView.getSelectionModel().clearSelection();
 	}
 	
-	
-	public void comboChange(ActionEvent event) {
-	}
-	
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
@@ -90,5 +86,6 @@ public class TransferController implements Initializable{
 			obj = usingMarketListView.getSelectionModel().getSelectedItem();
 			availableMarketListView.getSelectionModel().clearSelection();
 		});
+		
 	}
 }

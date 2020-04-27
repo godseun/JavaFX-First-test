@@ -25,7 +25,8 @@ public class MySqlQuery {
 				+ ",`사용여부` AS USEYN"
 				+ ",`일시정지` AS PAUSEYN"
 				+ ",`메모` AS MEMO "
-				+ " FROM "+Main.DB+".쇼핑몰로그인정보";
+				+ " FROM "+Main.DB+".쇼핑몰로그인정보"
+				+ " WHERE `사용여부` = 'Y' ; ";
 
 		String resultSet = "";
 		resultSet = ConnectServerInterface.ExecuteSql(sql);
