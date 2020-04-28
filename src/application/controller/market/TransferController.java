@@ -95,10 +95,6 @@ public class TransferController implements Initializable{
 	private void checkBoxDisabled() { checkBoxChange(true); }
 	private void checkBoxEnabled() { checkBoxChange(false); }
 	
-	private void checkBoxChange(CheckBox target, boolean stat) {
-		target.setDisable(stat);
-	}
-	
 	private void checkBoxChange(boolean able) {
 		prodInsert.setDisable(able);
 		prodUpdate.setDisable(able);
@@ -109,6 +105,10 @@ public class TransferController implements Initializable{
 		listViewSelectTarget = "";
 		marketUpBtn.setDisable(able);
 		marketDownBtn.setDisable(able);
+	}
+	
+	private void checkBoxChange(CheckBox target, boolean stat) {
+		target.setDisable(stat);
 	}
 	
 	private void marketAndFunctionTransfer() {
