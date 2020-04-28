@@ -7,85 +7,116 @@ import java.util.ResourceBundle;
 import application.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
 public class TransferController implements Initializable{
 
 	private Main main;
-	
-	@FXML
-	public Button marketUpBtn;
-	@FXML
-	public Button marketDownBtn;
-	
-	@FXML
-	public TextArea textArea;
-	
-	@FXML
-	public ListView<String> availableMarketListView;
-	
-	@FXML
-	public ListView<String> usingMarketListView;
-	
-	ArrayList<String> marketNames() {
-		ArrayList<String> getMarketNames = new ArrayList<String>();
-		for(String s : Main.loginMap.keySet()) {
-			getMarketNames.add(s);
-		}
-		return getMarketNames;
-	}
-	
-	ObservableList<String> availableMarketList = FXCollections.observableArrayList(marketNames());
-	ObservableList<String> usingMarketList = FXCollections.observableArrayList();
-	
-	Object obj;
-	
-	@FXML
-	private void StartBtnClick() {
-		System.out.println("start btn");
-	}
-	@FXML
-	private void marketUpBtn() {
-		usingMarketList.remove(obj);
-		if(!availableMarketList.contains(obj)) {
-			availableMarketList.add(obj.toString());
-		}
-		usingMarketListView.getSelectionModel().clearSelection();
-	}
-	@FXML
-	private void marketDownBtn() {
-		availableMarketList.remove(obj);
-		if(!usingMarketList.contains(obj)) {
-			usingMarketList.add(obj.toString());
-		}
-		availableMarketListView.getSelectionModel().clearSelection();
-	}
-	
 	public void setMainApp(Main main) {
 		this.main = main;
 	}
-
+	@FXML
+	public Button marketUpBtn,marketDownBtn,startBtn,pauseBtn,stopBtn;
+	@FXML
+	public TextArea textArea;
+	@FXML
+	public ListView<String> useingMarketListView,notUsingMarketListView;
+	@FXML
+	public CheckBox prodInsert,prodUpdate,prodStopSale,prodStartSale;
+	
+	public Object listViewSelectTarget;
+	
+	ArrayList<String> marketNameList() {
+		ArrayList<String> marketNameList = new ArrayList<String>();
+		for(String marketName : Main.loginMap.keySet()) {
+			marketNameList.add(marketName);
+		}
+		return marketNameList;
+	}
+	
+	ObservableList<String> useingMarketList = FXCollections.observableArrayList(marketNameList());
+	ObservableList<String> notUsingMarketList = FXCollections.observableArrayList();
+	
+	
+	@FXML
+	private void StartBtnClick() {
+		startBtn.setDisable(true);
+		checkBoxDisabled();
+		marketAndFunctionTransfer();
+	}
+	@FXML
+	private void PauseBtnClick() {
+		System.out.println("PauseBtnClick");
+	}
+	@FXML
+	private void StopBtnClick() {
+		startBtn.setDisable(false);
+		checkBoxEnabled();
+	}
+	@FXML
+	private void marketUpBtn() {
+		notUsingMarketList.remove(listViewSelectTarget);
+		if(!useingMarketList.contains(listViewSelectTarget)) {
+			useingMarketList.add(listViewSelectTarget.toString());
+		}
+		notUsingMarketListView.getSelectionModel().clearSelection();
+	}
+	@FXML
+	private void marketDownBtn() {
+		useingMarketList.remove(listViewSelectTarget);
+		if(!notUsingMarketList.contains(listViewSelectTarget)) {
+			notUsingMarketList.add(listViewSelectTarget.toString());
+		}
+		useingMarketListView.getSelectionModel().clearSelection();
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		availableMarketListView.setItems(availableMarketList);
-		usingMarketListView.setItems(usingMarketList);
+		useingMarketListView.setItems(useingMarketList);
+		notUsingMarketListView.setItems(notUsingMarketList);
 		
-		availableMarketListView.setOnMouseClicked(event ->{
-			obj = availableMarketListView.getSelectionModel().getSelectedItem();
-			usingMarketListView.getSelectionModel().clearSelection();
+		useingMarketListView.setOnMouseClicked(event ->{
+			listViewSelectTarget = useingMarketListView.getSelectionModel().getSelectedItem();
+			notUsingMarketListView.getSelectionModel().clearSelection();
 		});
 		
-		
-		usingMarketListView.setOnMouseClicked(event ->{
-			obj = usingMarketListView.getSelectionModel().getSelectedItem();
-			availableMarketListView.getSelectionModel().clearSelection();
+		notUsingMarketListView.setOnMouseClicked(event ->{
+			listViewSelectTarget = notUsingMarketListView.getSelectionModel().getSelectedItem();
+			useingMarketListView.getSelectionModel().clearSelection();
 		});
-		
+	}
+	
+	private void checkBoxDisabled() { checkBoxChange(true); }
+	private void checkBoxEnabled() { checkBoxChange(false); }
+	
+	private void checkBoxChange(CheckBox target, boolean stat) {
+		target.setDisable(stat);
+	}
+	
+	private void checkBoxChange(boolean able) {
+		prodInsert.setDisable(able);
+		prodUpdate.setDisable(able);
+		prodStopSale.setDisable(able);
+		prodStartSale.setDisable(able);
+		useingMarketListView.setDisable(able);
+		notUsingMarketListView.setDisable(able);
+		listViewSelectTarget = "";
+		marketUpBtn.setDisable(able);
+		marketDownBtn.setDisable(able);
+	}
+	
+	private void marketAndFunctionTransfer() {
+		for(String marketName : useingMarketList) {
+			if(prodInsert.isSelected()) ;
+			else if(prodUpdate.isSelected()) ;
+			else if(prodStopSale.isSelected()) ;
+			else if(prodStartSale.isSelected()) ;
+		}
 	}
 }

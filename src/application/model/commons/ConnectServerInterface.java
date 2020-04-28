@@ -22,7 +22,8 @@ import org.json.simple.parser.JSONParser;
 public class ConnectServerInterface {
 
 	private static CloseableHttpClient client = HttpClients.createDefault();
-	private static String DB_ADR = "121.181.156.200:8080";
+//	private static String DB_ADR = "121.181.156.200:8080";
+	private static String DB_ADR = "103.132.38.25";
 	
 	private static String sendPost(String url, List<NameValuePair> postParams) throws Exception {
 
@@ -148,7 +149,7 @@ public class ConnectServerInterface {
 			System.out.println("ipAddr : "+ipAddr);
 			System.out.println("hostname : "+hostname);
 			System.out.println("macAddr : "+macAddr);
-			
+			System.out.println("serverAddr :"+DB_ADR);
 		} catch (Exception e) {
 			e.printStackTrace();
 			json = "Error: 파라메타가 정의되지 않았습니다";

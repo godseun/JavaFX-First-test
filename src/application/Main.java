@@ -37,11 +37,6 @@ public class Main extends Application {
 		String dir = System.getProperty("user.dir").concat("\\jre\\chromedriver.exe");
 		System.setProperty("webdriver.chrome.driver", dir);
 		
-		ChromeOptions options = new ChromeOptions();
-//		options.addArguments("headless");
-		driver = new ChromeDriver(options);
-		js = (JavascriptExecutor) driver;
-		
 		DB = ConnectServerInterface.serachDB();
 		if (DB.equals("") || DB == null) {
 			// DB연결실패
@@ -52,7 +47,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Autometic Open Market Controller ver.1");;
+		this.primaryStage.setTitle("Autometic Open Market Controller ver.1.0.0");;
 		setLayout();
 	}
 	
@@ -69,11 +64,22 @@ public class Main extends Application {
 			tranController.setMainApp(this);
 			
 			primaryStage.setOnCloseRequest(event -> {
-				driver.quit();
+				closeDriver();
 			});
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void openDriver() {
+		ChromeOptions options = new ChromeOptions();
+//		options.addArguments("headless");
+		driver = new ChromeDriver(options);
+		js = (JavascriptExecutor) driver;
+	}
+	
+	public void closeDriver() {
+		if(driver != null) driver.quit();
 	}
 	
 	public Stage getPrimaryStage() {

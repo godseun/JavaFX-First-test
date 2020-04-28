@@ -16,18 +16,18 @@
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button layoutX="1028.0" layoutY="48.0" onMouseClicked="#StartBtnClick" prefHeight="29.0" prefWidth="82.0" text="시작" />
-                        <Button layoutX="1215.0" layoutY="48.0" prefHeight="29.0" prefWidth="82.0" text="종료" />
+                        <Button fx:id="startBtn" layoutX="1028.0" layoutY="48.0" onMouseClicked="#StartBtnClick" prefHeight="29.0" prefWidth="82.0" text="시작" />
+                        <Button fx:id="pauseBtn" layoutX="1121.0" layoutY="48.0" onMouseClicked="#PauseBtnClick" prefHeight="29.0" prefWidth="82.0" text="일시중지" />
+                        <Button fx:id="stopBtn" layoutX="1215.0" layoutY="48.0" onMouseClicked="#StopBtnClick" prefHeight="29.0" prefWidth="82.0" text="종료" />
                         <TextArea fx:id="textArea" editable="false" layoutX="273.0" layoutY="84.0" prefHeight="795.0" prefWidth="1024.0" />
-                        <Button layoutX="1121.0" layoutY="48.0" prefHeight="29.0" prefWidth="82.0" text="일시중지" />
-                        <CheckBox layoutX="652.0" layoutY="55.0" mnemonicParsing="false" text="상품등록" selected="true" />
-                        <CheckBox layoutX="731.0" layoutY="55.0" mnemonicParsing="false" text="상품수정" selected="true" />
-                        <CheckBox layoutX="810.0" layoutY="55.0" mnemonicParsing="false" text="판매중지" selected="true" />
-                        <CheckBox layoutX="889.0" layoutY="55.0" mnemonicParsing="false" text="재판매" selected="true" />
-                        <ListView fx:id="availableMarketListView" layoutX="14.0" layoutY="84.0" prefHeight="360.0" prefWidth="247.0" />
-                        <Label layoutX="171.0" layoutY="60.0" prefHeight="22.0" prefWidth="90.0" text="사용가능 쇼핑몰" />
-                        <ListView fx:id="usingMarketListView" layoutX="14.0" layoutY="485.0" prefHeight="388.0" prefWidth="247.0" />
-                        <Label layoutX="181.0" layoutY="460.0" prefHeight="22.0" prefWidth="80.0" text="사용할 쇼핑몰" />
+                        <CheckBox fx:id="prodInsert" layoutX="652.0" layoutY="55.0" mnemonicParsing="false" text="상품등록" selected="true" />
+                        <CheckBox fx:id="prodUpdate" layoutX="731.0" layoutY="55.0" mnemonicParsing="false" text="상품수정" selected="true" />
+                        <CheckBox fx:id="prodStopSale" layoutX="810.0" layoutY="55.0" mnemonicParsing="false" text="판매중지" selected="true" />
+                        <CheckBox fx:id="prodStartSale" layoutX="889.0" layoutY="55.0" mnemonicParsing="false" text="재판매" selected="true" />
+                        <ListView fx:id="useingMarketListView" layoutX="14.0" layoutY="84.0" prefHeight="360.0" prefWidth="247.0" />
+                        <Label layoutX="171.0" layoutY="60.0" prefHeight="22.0" prefWidth="90.0" text="사용 쇼핑몰" />
+                        <ListView fx:id="notUsingMarketListView" layoutX="14.0" layoutY="485.0" prefHeight="388.0" prefWidth="247.0" />
+                        <Label layoutX="181.0" layoutY="460.0" prefHeight="22.0" prefWidth="80.0" text="비사용 쇼핑몰" />
                         <Button fx:id="marketUpBtn" layoutX="109.0" layoutY="453.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="28.0" text="^" onAction="#marketUpBtn" />
                         <Button fx:id="marketDownBtn" layoutX="142.0" layoutY="453.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="28.0" text="v" onAction="#marketDownBtn" />
                      </children>
