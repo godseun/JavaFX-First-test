@@ -41,7 +41,7 @@ public class Main extends Application {
 		if (DB.equals("") || DB == null) {
 			// DB연결실패
 		}
-		loginMap = MySqlQuery.SelectLoginInfo();
+		loginMap = MySqlQuery.SelectLoginInfoMap();
 	}
 	
 	@Override
@@ -71,14 +71,16 @@ public class Main extends Application {
 		}
 	}
 	
-	public void openDriver() {
-		ChromeOptions options = new ChromeOptions();
-//		options.addArguments("headless");
-		driver = new ChromeDriver(options);
-		js = (JavascriptExecutor) driver;
+	static public void openDriver() {
+		if(driver == null) {
+			ChromeOptions options = new ChromeOptions();
+//			options.addArguments("headless");
+			driver = new ChromeDriver(options);
+			js = (JavascriptExecutor) driver;
+		}
 	}
 	
-	public void closeDriver() {
+	static public void closeDriver() {
 		if(driver != null) driver.quit();
 	}
 	

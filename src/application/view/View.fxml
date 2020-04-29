@@ -20,16 +20,16 @@
                         <Button fx:id="pauseBtn" layoutX="1121.0" layoutY="48.0" onMouseClicked="#PauseBtnClick" prefHeight="29.0" prefWidth="82.0" text="일시중지" />
                         <Button fx:id="stopBtn" layoutX="1215.0" layoutY="48.0" onMouseClicked="#StopBtnClick" prefHeight="29.0" prefWidth="82.0" text="종료" />
                         <TextArea fx:id="textArea" editable="false" layoutX="273.0" layoutY="84.0" prefHeight="795.0" prefWidth="1024.0" />
-                        <CheckBox fx:id="prodInsert" layoutX="652.0" layoutY="55.0" mnemonicParsing="false" text="상품등록" selected="true" />
-                        <CheckBox fx:id="prodUpdate" layoutX="731.0" layoutY="55.0" mnemonicParsing="false" text="상품수정" selected="true" />
-                        <CheckBox fx:id="prodStopSale" layoutX="810.0" layoutY="55.0" mnemonicParsing="false" text="판매중지" selected="true" />
-                        <CheckBox fx:id="prodStartSale" layoutX="889.0" layoutY="55.0" mnemonicParsing="false" text="재판매" selected="true" />
+                        <CheckBox fx:id="prodInsert" layoutX="652.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="상품등록" />
+                        <CheckBox fx:id="prodUpdate" layoutX="731.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="상품수정" />
+                        <CheckBox fx:id="prodStopSale" layoutX="810.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="판매중지" />
+                        <CheckBox fx:id="prodStartSale" layoutX="889.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="재판매" />
                         <ListView fx:id="useingMarketListView" layoutX="14.0" layoutY="84.0" prefHeight="360.0" prefWidth="247.0" />
-                        <Label layoutX="171.0" layoutY="60.0" prefHeight="22.0" prefWidth="90.0" text="사용 쇼핑몰" />
+                        <Label layoutX="195.0" layoutY="60.0" prefHeight="22.0" prefWidth="66.0" text="사용 쇼핑몰" />
                         <ListView fx:id="notUsingMarketListView" layoutX="14.0" layoutY="485.0" prefHeight="388.0" prefWidth="247.0" />
-                        <Label layoutX="181.0" layoutY="460.0" prefHeight="22.0" prefWidth="80.0" text="비사용 쇼핑몰" />
-                        <Button fx:id="marketUpBtn" layoutX="109.0" layoutY="453.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="28.0" text="^" onAction="#marketUpBtn" />
-                        <Button fx:id="marketDownBtn" layoutX="142.0" layoutY="453.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="28.0" text="v" onAction="#marketDownBtn" />
+                        <Label layoutX="185.0" layoutY="460.0" prefHeight="22.0" prefWidth="76.0" text="비사용 쇼핑몰" />
+                        <Button fx:id="marketUpBtn" layoutX="109.0" layoutY="453.0" mnemonicParsing="false" onAction="#marketUpBtn" prefHeight="23.0" prefWidth="28.0" text="^" />
+                        <Button fx:id="marketDownBtn" layoutX="142.0" layoutY="453.0" mnemonicParsing="false" onAction="#marketDownBtn" prefHeight="23.0" prefWidth="28.0" text="v" />
                      </children>
                   </AnchorPane>
                </content>

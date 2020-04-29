@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import application.Main;
+import application.model.commons.MySqlQuery;
+import application.model.vo.ProductVO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +18,9 @@ import javafx.scene.control.TextArea;
 
 public class TransferController implements Initializable{
 
+	private Thread thread;
+	private Thread pauseThread;
+	
 	private Main main;
 	public void setMainApp(Main main) {
 		this.main = main;
@@ -47,16 +52,26 @@ public class TransferController implements Initializable{
 	private void StartBtnClick() {
 		startBtn.setDisable(true);
 		checkBoxDisabled();
-		marketAndFunctionTransfer();
+		if(thread!=null) return;
+		startLogic();
 	}
 	@FXML
-	private void PauseBtnClick() {
-		System.out.println("PauseBtnClick");
+	private void PauseBtnClick() throws InterruptedException {
+		String pauseBtnStat = pauseBtn.getText();
+		if(thread==null) return;
+		if(pauseBtnStat.equals("일시중지")) {
+			pauseBtn.setText("재시작");
+		} else {
+			pauseBtn.setText("일시중지");
+		}
 	}
+	
 	@FXML
 	private void StopBtnClick() {
 		startBtn.setDisable(false);
 		checkBoxEnabled();
+		if(thread==null) return;
+		stopLogic();
 	}
 	@FXML
 	private void marketUpBtn() {
@@ -90,6 +105,7 @@ public class TransferController implements Initializable{
 			listViewSelectTarget = notUsingMarketListView.getSelectionModel().getSelectedItem();
 			useingMarketListView.getSelectionModel().clearSelection();
 		});
+		
 	}
 	
 	private void checkBoxDisabled() { checkBoxChange(true); }
@@ -107,16 +123,92 @@ public class TransferController implements Initializable{
 		marketDownBtn.setDisable(able);
 	}
 	
-	private void checkBoxChange(CheckBox target, boolean stat) {
-		target.setDisable(stat);
+	private void startLogic() {
+		Main.openDriver();
+		thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true) {
+					if(!startBtn.isDisable()) break;
+					marketAndFunctionTransfer();
+				}
+			}
+		});
+
+		thread.setDaemon(true);
+		thread.start();
+	}
+	
+	private void stopLogic() {
+		thread.interrupt();
+		thread = null;
+		Main.closeDriver();
 	}
 	
 	private void marketAndFunctionTransfer() {
 		for(String marketName : useingMarketList) {
-			if(prodInsert.isSelected()) ;
-			else if(prodUpdate.isSelected()) ;
-			else if(prodStopSale.isSelected()) ;
-			else if(prodStartSale.isSelected()) ;
+			if(prodInsert.isSelected()) prodRegForMarket(marketName);
+			else if(prodUpdate.isSelected()) prodUpdateForMarket(marketName);
+			else if(prodStopSale.isSelected()) prodStopSaleForMarket(marketName);
+			else if(prodStartSale.isSelected()) prodStartSaleForMarket(marketName);
+		}
+	}
+	
+	private void prodStartSaleForMarket(String marketName) {
+		switch (marketName) {
+		case "네이버": break;
+		case "쿠팡": break;
+		case "티몬": break;
+		case "위메프": break;
+		case "11번가": break;
+		case "인터파크": break;
+		case "지마켓": break;
+			
+		default:break;
+		}
+	}
+	private void prodStopSaleForMarket(String marketName) {
+		switch (marketName) {
+		case "네이버": break;
+		case "쿠팡": break;
+		case "티몬": break;
+		case "위메프": break;
+		case "11번가": break;
+		case "인터파크": break;
+		case "지마켓": break;
+			
+		default:break;
+		}
+	}
+	private void prodUpdateForMarket(String marketName) {
+		switch (marketName) {
+		case "네이버": break;
+		case "쿠팡": break;
+		case "티몬": break;
+		case "위메프": break;
+		case "11번가": break;
+		case "인터파크": break;
+		case "지마켓": break;
+			
+		default:break;
+		}
+	}
+	private void prodRegForMarket(String marketName) {
+		String status = "등록중";
+		ArrayList<ProductVO> prodList = MySqlQuery.SelectProdInfoArrayMap(marketName, status);
+		switch (marketName) {
+		case "네이버": 
+			if(prodList != null && !prodList.isEmpty())
+				NaverController.individualProductRegistration(); 
+			break;
+		case "쿠팡": break;
+		case "티몬": break;
+		case "위메프": break;
+		case "11번가": break;
+		case "인터파크": break;
+		case "지마켓": break;
+			
+		default:break;
 		}
 	}
 }

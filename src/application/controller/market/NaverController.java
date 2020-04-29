@@ -1,31 +1,17 @@
 package application.controller.market;
 
 import application.Main;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import application.model.Commons;
+import application.model.market.naver.NaverCommon;
 
 public class NaverController {
 
-	@FXML
-	private Button check;
-	
-	private Main main;
-	
-	public NaverController() {
+	public void login() {
 		
 	}
 	
-	@FXML
-	private void initialize() {
-		
-	}
-	
-	@FXML
-	private void StartBtnClick() {
-		System.out.println("start btn");
-	}
-	
-	public void setMainApp(Main main) {
-		this.main = main;
+	static public void individualProductRegistration() {
+		Commons.newTab(NaverCommon.PRODUCT_INSERT_URL);
+		System.out.println(Main.driver.getCurrentUrl());
 	}
 }
