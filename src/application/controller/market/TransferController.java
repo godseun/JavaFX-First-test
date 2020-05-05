@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import application.Main;
+import application.model.Commons;
 import application.model.commons.MySqlQuery;
 import application.model.vo.ProductVO;
 import javafx.collections.FXCollections;
@@ -19,7 +20,6 @@ import javafx.scene.control.TextArea;
 public class TransferController implements Initializable{
 
 	private Thread thread;
-	private Thread pauseThread;
 	
 	private Main main;
 	public void setMainApp(Main main) {
@@ -93,6 +93,10 @@ public class TransferController implements Initializable{
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		if (Main.DB.equals("") || Main.DB == null) {
+			textArea.setText("DB 서치실패 \n");
+		}
+		
 		useingMarketListView.setItems(useingMarketList);
 		notUsingMarketListView.setItems(notUsingMarketList);
 		
@@ -152,8 +156,11 @@ public class TransferController implements Initializable{
 			else if(prodStopSale.isSelected()) prodStopSaleForMarket(marketName);
 			else if(prodStartSale.isSelected()) prodStartSaleForMarket(marketName);
 		}
+		// 한바퀴 돌고 초기상태로 탭 전부 닫기.
+		// TODO 탭별로 자바스크립트 메모리 쌓이는거 해결되는지 체크해야함
+		Commons.windowInit();
 	}
-	
+	// TODO CRUD 로직 구현중
 	private void prodStartSaleForMarket(String marketName) {
 		switch (marketName) {
 		case "네이버": break;
@@ -164,7 +171,7 @@ public class TransferController implements Initializable{
 		case "인터파크": break;
 		case "지마켓": break;
 			
-		default:break;
+		default : System.out.println("상품재판매 : 확인필요 "+marketName); break;
 		}
 	}
 	private void prodStopSaleForMarket(String marketName) {
@@ -177,7 +184,7 @@ public class TransferController implements Initializable{
 		case "인터파크": break;
 		case "지마켓": break;
 			
-		default:break;
+		default : System.out.println("상품판매중지 : 확인필요 "+marketName); break;
 		}
 	}
 	private void prodUpdateForMarket(String marketName) {
@@ -190,7 +197,7 @@ public class TransferController implements Initializable{
 		case "인터파크": break;
 		case "지마켓": break;
 			
-		default:break;
+		default : System.out.println("상품수정 : 확인필요 "+marketName); break;
 		}
 	}
 	private void prodRegForMarket(String marketName) {
@@ -199,7 +206,7 @@ public class TransferController implements Initializable{
 		switch (marketName) {
 		case "네이버": 
 			if(prodList != null && !prodList.isEmpty())
-				NaverController.individualProductRegistration(); 
+				NaverController.individualProductRegistration(prodList, "naver"); 
 			break;
 		case "쿠팡": break;
 		case "티몬": break;
@@ -208,7 +215,7 @@ public class TransferController implements Initializable{
 		case "인터파크": break;
 		case "지마켓": break;
 			
-		default:break;
+		default : System.out.println("상품등록 : 확인필요 "+marketName); break;
 		}
 	}
 }

@@ -33,14 +33,14 @@ public class ConnectServerInterface {
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 		post.setHeader("user-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36");
 		CloseableHttpResponse response = client.execute(post);
-		int responseCode = response.getStatusLine().getStatusCode();
+//		int responseCode = response.getStatusLine().getStatusCode();
 		Header[] headers = response.getAllHeaders();
 		for (Header header : headers) {
 //			System.out.println("Key : " + header.getName() + " ,Value : " + header.getValue());
 			String name = header.getName().trim();
 			if (name.equals("Set-Cookie")) {
 
-				String[] s = header.getValue().split(";");
+//				String[] s = header.getValue().split(";");
 //				System.out.println("Set-Cookie:" + s[0]);
 
 			}
@@ -81,7 +81,6 @@ public class ConnectServerInterface {
                 //판매재개 걸어준다
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
@@ -92,7 +91,6 @@ public class ConnectServerInterface {
 
 		List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(1);
 
-		String json = "";
 		String reSt = "";
 		
 		nameValuePair.add(new BasicNameValuePair("params", "sp_SqlDynamic▤SEARCH▤SqlDynamic▤S▤1000▤600▥SQL▤" + sql + "▥TRANYN▤Y"));
@@ -108,7 +106,6 @@ public class ConnectServerInterface {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			json = "Error: 파라메타가 정의되지 않았습니다";
 		} finally {
 
 		}
@@ -117,7 +114,6 @@ public class ConnectServerInterface {
 	}
 
 	static public String serachDB() {
-		String json = "";
 		String DB = "";
 		try {
 			InetAddress addr = InetAddress.getLocalHost();
@@ -152,7 +148,6 @@ public class ConnectServerInterface {
 			System.out.println("serverAddr :"+DB_ADR);
 		} catch (Exception e) {
 			e.printStackTrace();
-			json = "Error: 파라메타가 정의되지 않았습니다";
 		} finally {
 		}
 		System.out.println("DB search : "+DB);

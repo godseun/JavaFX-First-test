@@ -3,15 +3,16 @@ package application;
 import java.io.IOException;
 import java.util.Map;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import application.controller.market.NaverController;
 import application.controller.market.TransferController;
 import application.model.commons.ConnectServerInterface;
 import application.model.commons.MySqlQuery;
+import application.model.vo.DeliveryCodeVO;
 import application.model.vo.LoginVO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -25,9 +26,12 @@ public class Main extends Application {
 	public static WebDriver driver;
 	public static JavascriptExecutor js;
 	
+	public static String defaultWindow;
+	
 	public static String DB;
 	
 	public static Map<String, LoginVO> loginMap;
+	public static Map<String, DeliveryCodeVO> delCodeMap;
 	
 	private Stage primaryStage;
 	private AnchorPane layout;
@@ -37,17 +41,13 @@ public class Main extends Application {
 		String dir = System.getProperty("user.dir").concat("\\jre\\chromedriver.exe");
 		System.setProperty("webdriver.chrome.driver", dir);
 		
-		DB = ConnectServerInterface.serachDB();
-		if (DB.equals("") || DB == null) {
-			// DB연결실패
-		}
-		loginMap = MySqlQuery.SelectLoginInfoMap();
+		setDefualtInfo();
 	}
 	
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Autometic Open Market Controller ver.1.0.0");;
+		this.primaryStage.setTitle("Autometic Open Market Controller ver.BETA");;
 		setLayout();
 	}
 	
@@ -77,6 +77,8 @@ public class Main extends Application {
 //			options.addArguments("headless");
 			driver = new ChromeDriver(options);
 			js = (JavascriptExecutor) driver;
+			driver.manage().window().setSize(new Dimension(1936, 1056));
+			defaultWindow = driver.getWindowHandle();
 		}
 	}
 	
@@ -86,6 +88,20 @@ public class Main extends Application {
 	
 	public Stage getPrimaryStage() {
 		return primaryStage;
+	}
+	
+	static public void connectDB() {
+		DB = ConnectServerInterface.serachDB();
+		if (DB.equals("") || DB == null) {
+			// TODO DB연결실패 로직만들자
+		}
+	}
+	
+	static public void setDefualtInfo() {
+		connectDB();
+		// TODO DB연결실패 로직 만들어야함
+		loginMap = MySqlQuery.SelectLoginInfoMap();
+		delCodeMap = MySqlQuery.SelectDelcompcodeInfoArrayMap();
 	}
 	
 	public static void main(String[] args) {

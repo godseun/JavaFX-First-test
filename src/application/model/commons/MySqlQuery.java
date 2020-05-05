@@ -9,8 +9,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import application.Main;
+import application.model.service.DeliveryCodeInfoService;
 import application.model.service.LoginAccountInfoService;
 import application.model.service.TranopenProdInfoService;
+import application.model.vo.DeliveryCodeVO;
 import application.model.vo.LoginVO;
 import application.model.vo.ProductVO;
 
@@ -102,7 +104,7 @@ public class MySqlQuery {
 						+ " AND RESULTYN='' "
 						+ " AND OPENSTATUS='"+status+"' "
 						+ " AND ITEMCD NOT IN (SELECT ITEMCD FROM "+Main.DB+".`"+market+"pro`) LIMIT 1; ";
-		
+		// TODO limit 해제하자
 		String resultSet = "";
 		resultSet = ConnectServerInterface.ExecuteSql(sql);
 		
@@ -145,5 +147,36 @@ public class MySqlQuery {
 		}
 		
 		return tranopenService.getTranopenProdInfoList();
+	}
+	
+	static public Map<String, DeliveryCodeVO> SelectDelcompcodeInfoArrayMap() {
+		// TODO delcompcode 미완성   *를 각 컬럼이름으로 바꾸자
+		String sql = "";
+		sql = "SELECT * FROM "+Main.DB+".delcompCode WHERE defualtYn = 'Y' ; ";
+		
+		String resultSet = "";
+		resultSet = ConnectServerInterface.ExecuteSql(sql);
+		
+		DeliveryCodeInfoService deliveryCodeService = new DeliveryCodeInfoService();
+		
+		JSONParser jsonParser = new JSONParser();
+		try {
+			if(!resultSet.equals("[]")) {
+				if(!resultSet.contains("CHK")) {
+					JSONArray jArr = (JSONArray) jsonParser.parse(resultSet);
+					for (int i = 0; i < jArr.size(); i++) {
+						JSONObject jObj = (JSONObject) jArr.get(i);
+						
+						DeliveryCodeVO delVO = new DeliveryCodeVO();
+						// TODO DeliveryCodeVO 완성시키고 로직도 완성하자
+						
+						deliveryCodeService.setDeliveryCodeInfoMap("마켓네임", delVO);
+					}
+				}
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return deliveryCodeService.getDeliveryCodeInfoMap();
 	}
 }
