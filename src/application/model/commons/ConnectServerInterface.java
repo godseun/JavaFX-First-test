@@ -131,7 +131,7 @@ public class ConnectServerInterface {
 				macAddr += String.format("%02X%s", mac[i], (i < mac.length - 1) ? ":" : "");
 			}
 
-			String sql = "SELECT DB" + "  FROM USEAUT.MACADDR" + "  where mac like '%" + macAddr + "%' ;";
+			String sql = "SELECT DB  FROM USEAUT.MACADDR  where mac like '%" + macAddr + "%' ;";
 			List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(1);
 			nameValuePair.add(new BasicNameValuePair("params", "sp_SqlDynamic▤SEARCH▤SqlDynamic▤S▤1000▤600▥SQL▤" + sql + "▥TRANYN▤N"));
 			String s = sendPost("http://"+DB_ADR+"/Controller/SqlProcedure.do", nameValuePair);

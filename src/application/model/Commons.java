@@ -14,7 +14,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -24,6 +27,33 @@ public class Commons {
 
 	private static WebDriverWait wait = new WebDriverWait(Main.driver, 5);
 
+	static public boolean focusAfterCheckOpenTab(String marketName) {
+		try {
+			Main.driver.switchTo().window(marketName);
+			return true;
+		} catch (NoSuchWindowException e) {
+			return false;
+		}
+	}
+	
+	static public void jsScrollIntoView(String xpath) {
+		Main.js.executeScript("arguments[0].scrollIntoView()", Main.driver.findElement(By.xpath(xpath)));
+	}
+	
+	static public void jsScrollIntoView(WebElement webEle) {
+		Main.js.executeScript("arguments[0].scrollIntoView()", webEle);
+	}
+	
+	static public void xpathClickAfterElementToBeClickable(String xpath) {
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath))).click();
+	}
+	
+	static public void clearAndSendKeyAfterElementToBeClickable(WebElement webEle, String st) {
+		wait.until(ExpectedConditions.elementToBeClickable(webEle));
+		webEle.clear();
+		webEle.sendKeys(st);
+	}
+	
 	static public void newTab(String url, String marketName) {
 		Main.js.executeScript("window.open('"+url+"','"+marketName+"')");
 		Main.driver.switchTo().window(marketName);
@@ -35,6 +65,7 @@ public class Commons {
 				Main.driver.close();
 			}
 		}
+		Main.driver.switchTo().window(Main.defaultWindow);
 	}
 	
 	public static boolean waitUrlCheck(String url) {

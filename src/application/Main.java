@@ -83,7 +83,13 @@ public class Main extends Application {
 	}
 	
 	static public void closeDriver() {
-		if(driver != null) driver.quit();
+		if(driver != null) {
+			for(String windowName : driver.getWindowHandles()) {
+				driver.switchTo().window(windowName);
+				driver.close();
+			}
+			driver.quit();
+		}
 	}
 	
 	public Stage getPrimaryStage() {
@@ -100,6 +106,8 @@ public class Main extends Application {
 	static public void setDefualtInfo() {
 		connectDB();
 		// TODO DB연결실패 로직 만들어야함
+		openDriver();
+		
 		loginMap = MySqlQuery.SelectLoginInfoMap();
 		delCodeMap = MySqlQuery.SelectDelcompcodeInfoArrayMap();
 	}

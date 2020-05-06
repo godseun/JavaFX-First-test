@@ -1,7 +1,9 @@
 package application.controller.market;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import application.Main;
@@ -18,7 +20,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
 public class TransferController implements Initializable{
-
+	
 	private Thread thread;
 	
 	private Main main;
@@ -28,7 +30,7 @@ public class TransferController implements Initializable{
 	@FXML
 	public Button marketUpBtn,marketDownBtn,startBtn,pauseBtn,stopBtn;
 	@FXML
-	public TextArea textArea;
+	public static TextArea textArea;
 	@FXML
 	public ListView<String> useingMarketListView,notUsingMarketListView;
 	@FXML
@@ -44,15 +46,43 @@ public class TransferController implements Initializable{
 		return marketNameList;
 	}
 	
-	ObservableList<String> useingMarketList = FXCollections.observableArrayList(marketNameList());
+	ObservableList<String> usingMarketList = FXCollections.observableArrayList(marketNameList());
 	ObservableList<String> notUsingMarketList = FXCollections.observableArrayList();
 	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		
+		if (Main.DB.equals("") || Main.DB == null) {
+			setTextAreaWrite("\n [DB 서치실패] \n");
+			checkBoxDisabled();
+			startBtn.setDisable(true);
+			pauseBtn.setDisable(true);
+			stopBtn.setDisable(true);
+		}
+		
+		useingMarketListView.setItems(usingMarketList);
+		notUsingMarketListView.setItems(notUsingMarketList);
+		
+		useingMarketListView.setOnMouseClicked(event ->{
+			listViewSelectTarget = useingMarketListView.getSelectionModel().getSelectedItem();
+			notUsingMarketListView.getSelectionModel().clearSelection();
+		});
+		
+		notUsingMarketListView.setOnMouseClicked(event ->{
+			listViewSelectTarget = notUsingMarketListView.getSelectionModel().getSelectedItem();
+			useingMarketListView.getSelectionModel().clearSelection();
+		});
+	}
 	
 	@FXML
 	private void StartBtnClick() {
+		if(thread!=null) {
+			setTextAreaWrite("종료중입니다. 잠시만 기다려주세요.");
+			return;
+		}
 		startBtn.setDisable(true);
 		checkBoxDisabled();
-		if(thread!=null) return;
+		disableAfterComparingMarketAndDefaultDelCodeInUse();
 		startLogic();
 	}
 	@FXML
@@ -68,48 +98,25 @@ public class TransferController implements Initializable{
 	
 	@FXML
 	private void StopBtnClick() {
+		if(thread==null) return;
 		startBtn.setDisable(false);
 		checkBoxEnabled();
-		if(thread==null) return;
-		stopLogic();
 	}
 	@FXML
 	private void marketUpBtn() {
 		notUsingMarketList.remove(listViewSelectTarget);
-		if(!useingMarketList.contains(listViewSelectTarget)) {
-			useingMarketList.add(listViewSelectTarget.toString());
+		if(!usingMarketList.contains(listViewSelectTarget)) {
+			usingMarketList.add(listViewSelectTarget.toString());
 		}
 		notUsingMarketListView.getSelectionModel().clearSelection();
 	}
 	@FXML
 	private void marketDownBtn() {
-		useingMarketList.remove(listViewSelectTarget);
+		usingMarketList.remove(listViewSelectTarget);
 		if(!notUsingMarketList.contains(listViewSelectTarget)) {
 			notUsingMarketList.add(listViewSelectTarget.toString());
 		}
 		useingMarketListView.getSelectionModel().clearSelection();
-	}
-	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		
-		if (Main.DB.equals("") || Main.DB == null) {
-			textArea.setText("DB 서치실패 \n");
-		}
-		
-		useingMarketListView.setItems(useingMarketList);
-		notUsingMarketListView.setItems(notUsingMarketList);
-		
-		useingMarketListView.setOnMouseClicked(event ->{
-			listViewSelectTarget = useingMarketListView.getSelectionModel().getSelectedItem();
-			notUsingMarketListView.getSelectionModel().clearSelection();
-		});
-		
-		notUsingMarketListView.setOnMouseClicked(event ->{
-			listViewSelectTarget = notUsingMarketListView.getSelectionModel().getSelectedItem();
-			useingMarketListView.getSelectionModel().clearSelection();
-		});
-		
 	}
 	
 	private void checkBoxDisabled() { checkBoxChange(true); }
@@ -126,9 +133,8 @@ public class TransferController implements Initializable{
 		marketUpBtn.setDisable(able);
 		marketDownBtn.setDisable(able);
 	}
-	
+	// TODO 일시정지,종료 시 어떻게할건지 미정
 	private void startLogic() {
-		Main.openDriver();
 		thread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -136,6 +142,8 @@ public class TransferController implements Initializable{
 					if(!startBtn.isDisable()) break;
 					marketAndFunctionTransfer();
 				}
+				Commons.windowInit();
+				stopLogic();
 			}
 		});
 
@@ -146,76 +154,100 @@ public class TransferController implements Initializable{
 	private void stopLogic() {
 		thread.interrupt();
 		thread = null;
-		Main.closeDriver();
 	}
 	
 	private void marketAndFunctionTransfer() {
-		for(String marketName : useingMarketList) {
+		for(String marketName : usingMarketList) {
 			if(prodInsert.isSelected()) prodRegForMarket(marketName);
 			else if(prodUpdate.isSelected()) prodUpdateForMarket(marketName);
 			else if(prodStopSale.isSelected()) prodStopSaleForMarket(marketName);
 			else if(prodStartSale.isSelected()) prodStartSaleForMarket(marketName);
 		}
-		// 한바퀴 돌고 초기상태로 탭 전부 닫기.
-		// TODO 탭별로 자바스크립트 메모리 쌓이는거 해결되는지 체크해야함
-		Commons.windowInit();
 	}
 	// TODO CRUD 로직 구현중
 	private void prodStartSaleForMarket(String marketName) {
 		switch (marketName) {
-		case "네이버": break;
-		case "쿠팡": break;
-		case "티몬": break;
-		case "위메프": break;
-		case "11번가": break;
-		case "인터파크": break;
-		case "지마켓": break;
-			
-		default : System.out.println("상품재판매 : 확인필요 "+marketName); break;
+			case "네이버": break;
+			case "쿠팡": break;
+			case "티몬": break;
+			case "위메프": break;
+			case "11번가": break;
+			case "인터파크": break;
+			case "지마켓": break;
+				
+			default : System.out.println("상품재판매 : 확인필요 "+marketName); break;
 		}
 	}
 	private void prodStopSaleForMarket(String marketName) {
 		switch (marketName) {
-		case "네이버": break;
-		case "쿠팡": break;
-		case "티몬": break;
-		case "위메프": break;
-		case "11번가": break;
-		case "인터파크": break;
-		case "지마켓": break;
-			
-		default : System.out.println("상품판매중지 : 확인필요 "+marketName); break;
+			case "네이버": break;
+			case "쿠팡": break;
+			case "티몬": break;
+			case "위메프": break;
+			case "11번가": break;
+			case "인터파크": break;
+			case "지마켓": break;
+				
+			default : System.out.println("상품판매중지 : 확인필요 "+marketName); break;
 		}
 	}
 	private void prodUpdateForMarket(String marketName) {
 		switch (marketName) {
-		case "네이버": break;
-		case "쿠팡": break;
-		case "티몬": break;
-		case "위메프": break;
-		case "11번가": break;
-		case "인터파크": break;
-		case "지마켓": break;
-			
-		default : System.out.println("상품수정 : 확인필요 "+marketName); break;
+			case "네이버": break;
+			case "쿠팡": break;
+			case "티몬": break;
+			case "위메프": break;
+			case "11번가": break;
+			case "인터파크": break;
+			case "지마켓": break;
+				
+			default : System.out.println("상품수정 : 확인필요 "+marketName); break;
 		}
 	}
 	private void prodRegForMarket(String marketName) {
 		String status = "등록중";
 		ArrayList<ProductVO> prodList = MySqlQuery.SelectProdInfoArrayMap(marketName, status);
 		switch (marketName) {
-		case "네이버": 
-			if(prodList != null && !prodList.isEmpty())
-				NaverController.individualProductRegistration(prodList, "naver"); 
-			break;
-		case "쿠팡": break;
-		case "티몬": break;
-		case "위메프": break;
-		case "11번가": break;
-		case "인터파크": break;
-		case "지마켓": break;
-			
-		default : System.out.println("상품등록 : 확인필요 "+marketName); break;
+			case "네이버":
+				if(prodList != null && !prodList.isEmpty())
+					NaverController.individualProductRegistration(prodList, "naver");
+				break;
+			case "쿠팡": break;
+			case "티몬": break;
+			case "위메프": break;
+			case "11번가": break;
+			case "인터파크": break;
+			case "지마켓": break;
+				
+			default : System.out.println("상품등록 : 확인필요 "+marketName); break;
 		}
+	}
+	
+	private void disableAfterComparingMarketAndDefaultDelCodeInUse() {
+		if(!Main.delCodeMap.isEmpty()) {
+			ArrayList<String> list = new ArrayList<String>();
+			String marketList = "";
+			for(String marketName : usingMarketList) {
+				if(Main.delCodeMap.get(marketName) == null) {
+					// TODO textArea에 사용하려는 마켓에 택배사코드 디폴트설정 안되어있다고 알리고 로직에서 제외하기
+					list.add(marketName);
+				}
+			}
+			if(list.size()>0) {
+				for(String marketName : list) {
+					usingMarketList.remove(marketName);
+					notUsingMarketList.add(marketName);
+					marketList = marketList.concat(","+marketName);
+				}
+				setTextAreaWrite("["+marketList.substring(1, marketList.length())+"] 기본배송지설정이 안되어있어 사용불가합니다.");
+			}
+		}
+	}
+	
+	static public void setTextAreaWrite(String text) {
+		Calendar calendar = Calendar.getInstance();
+		SimpleDateFormat dateForm = new SimpleDateFormat("MM-dd HH:mm:ss");
+		
+		textArea.appendText(dateForm.format(calendar.getTime())+" > "+text+"\n");
 	}
 }

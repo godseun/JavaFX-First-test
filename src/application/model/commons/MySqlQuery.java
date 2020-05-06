@@ -11,9 +11,11 @@ import org.json.simple.parser.ParseException;
 import application.Main;
 import application.model.service.DeliveryCodeInfoService;
 import application.model.service.LoginAccountInfoService;
+import application.model.service.NaverOptionInfoService;
 import application.model.service.TranopenProdInfoService;
 import application.model.vo.DeliveryCodeVO;
 import application.model.vo.LoginVO;
+import application.model.vo.NaverOptionVO;
 import application.model.vo.ProductVO;
 
 public class MySqlQuery {
@@ -150,9 +152,12 @@ public class MySqlQuery {
 	}
 	
 	static public Map<String, DeliveryCodeVO> SelectDelcompcodeInfoArrayMap() {
-		// TODO delcompcode 미완성   *를 각 컬럼이름으로 바꾸자
+
 		String sql = "";
-		sql = "SELECT * FROM "+Main.DB+".delcompCode WHERE defualtYn = 'Y' ; ";
+		sql = "SELECT COMPCODE,COMPNAME,MARKETNAME,DELCODE,"
+				+ " DELCOMPNAME,CRETECDELCODE,CRETECDELCOMPNAME,"
+				+ " DEFUALTYN,DELFEE,REMOTEFEE"
+				+ " FROM "+Main.DB+".delcompCode WHERE defualtYn = 'Y' ; ";
 		
 		String resultSet = "";
 		resultSet = ConnectServerInterface.ExecuteSql(sql);
@@ -168,9 +173,18 @@ public class MySqlQuery {
 						JSONObject jObj = (JSONObject) jArr.get(i);
 						
 						DeliveryCodeVO delVO = new DeliveryCodeVO();
-						// TODO DeliveryCodeVO 완성시키고 로직도 완성하자
+						delVO.setCompCode(jObj.get("COMPCODE").toString());
+						delVO.setCompName(jObj.get("COMPNAME").toString());
+						delVO.setMarketName(jObj.get("MARKETNAME").toString());
+						delVO.setDelCode((jObj.get("DELCODE") != null)?jObj.get("DELCODE").toString():"");
+						delVO.setDelcompName((jObj.get("DELCOMPNAME") != null)?jObj.get("DELCOMPNAME").toString():"");
+						delVO.setCretecDelCode((jObj.get("CRETECDELCODE") != null)?jObj.get("CRETECDELCODE").toString():"");
+						delVO.setCretecDelcompName((jObj.get("CRETECDELCOMPNAME") != null)?jObj.get("CRETECDELCOMPNAME").toString():"");
+						delVO.setDefaultYn(jObj.get("DEFUALTYN").toString());
+						delVO.setDelFee(jObj.get("DELFEE").toString());
+						delVO.setRemoteFee(jObj.get("REMOTEFEE").toString());
 						
-						deliveryCodeService.setDeliveryCodeInfoMap("마켓네임", delVO);
+						deliveryCodeService.setDeliveryCodeInfoMap(jObj.get("MARKETNAME").toString(), delVO);
 					}
 				}
 			}
@@ -178,5 +192,43 @@ public class MySqlQuery {
 			e.printStackTrace();
 		}
 		return deliveryCodeService.getDeliveryCodeInfoMap();
+	}
+	
+	static public ArrayList<NaverOptionVO> searchOption(String itemcd) {
+		
+		String sql = "";
+		sql = "SELECT MITEMCD,ITEMCD,OPTTYPE,OPTNM,OPTPRICE,SALEYN"
+				+ " FROM "+Main.DB+".naverOption WHERE MITEMCD = '"+itemcd+"' ; ";
+		
+		String resultSet = "";
+		resultSet = ConnectServerInterface.ExecuteSql(sql);
+		
+		NaverOptionInfoService naverOptionService = new NaverOptionInfoService();
+		
+		JSONParser jsonParser = new JSONParser();
+		try {
+			if(!resultSet.equals("[]")) {
+				if(!resultSet.contains("CHK")) {
+					JSONArray jArr = (JSONArray) jsonParser.parse(resultSet);
+					for (int i = 0; i < jArr.size(); i++) {
+						JSONObject jObj = (JSONObject) jArr.get(i);
+						
+						NaverOptionVO optionVO = new NaverOptionVO();
+						optionVO.setmItemCd(jObj.get("MITEMCD").toString());
+						optionVO.setItemCd(jObj.get("ITEMCD").toString());
+						optionVO.setOptType(jObj.get("OPTTYPE").toString());
+						optionVO.setOptNm(jObj.get("OPTNM").toString());
+						optionVO.setOptPrice(jObj.get("OPTPRICE").toString());
+						optionVO.setSaleYn(jObj.get("SALEYN").toString());
+						
+						naverOptionService.setNaverOptionInfoVO(optionVO);
+					}
+				}
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return naverOptionService.getNaverOptionInfoVO();
 	}
 }
