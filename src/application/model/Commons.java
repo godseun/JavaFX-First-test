@@ -54,6 +54,10 @@ public class Commons {
 		webEle.sendKeys(st);
 	}
 	
+	static public void setTextAreaWrite(String text) {
+		Main.setTextArea = text;
+	}
+	
 	static public void newTab(String url, String marketName) {
 		Main.js.executeScript("window.open('"+url+"','"+marketName+"')");
 		Main.driver.switchTo().window(marketName);

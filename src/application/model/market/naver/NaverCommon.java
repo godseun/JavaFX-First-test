@@ -592,8 +592,7 @@ public class NaverCommon {
 			}
 			waitForNaverAjax();
 		} catch (Exception e) {
-			TransferController tranController = new TransferController();
-			tranController.setTextAreaWrite("itemcd :["+prodId+"] 상품등록 페이지 이동 중 에러");
+			Commons.setTextAreaWrite("itemcd :["+prodId+"] 상품등록 페이지 이동 중 에러");
 		}
 	}
 	
@@ -617,8 +616,7 @@ public class NaverCommon {
 				
 			}
 		} catch (Exception e) {
-			TransferController tranController = new TransferController();
-			tranController.setTextAreaWrite("itemcd :["+prodId+"] 상품검색 페이지 이동 중 에러");
+			Commons.setTextAreaWrite("itemcd :["+prodId+"] 상품검색 페이지 이동 중 에러");
 		}
 	}
 	
@@ -636,8 +634,7 @@ public class NaverCommon {
 			}
 			waitForNaverAjax();
 		} catch (Exception e) {
-			TransferController tranController = new TransferController();
-			tranController.setTextAreaWrite("itemcd :["+prodId+"] 상품수정 페이지 이동 중 에러");
+			Commons.setTextAreaWrite("itemcd :["+prodId+"] 상품수정 페이지 이동 중 에러");
 		}
 	}
 	

@@ -76,8 +76,7 @@ public class NaverController {
 					oitemcd = naverCommon.getOitemcdAfterSaveButtonClick(itemcd);
 					
 					if(!oitemcd.equals("") && oitemcd != null) {
-						
-						Main.setTextArea = "itemcd :["+itemcd+"] 상품등록완료";
+						Commons.setTextAreaWrite("itemcd :["+itemcd+"] 상품등록완료");
 						try {
 							// TODO: DB업데이트로직
 						} catch (Exception e) {
@@ -87,7 +86,7 @@ public class NaverController {
 					
 				} catch (Exception e) {
 					e.printStackTrace();
-					Main.setTextArea = "itemcd :["+parentsId+"] 상품등록 중 에러";
+					Commons.setTextAreaWrite("itemcd :["+parentsId+"] 상품등록 중 에러");
 					
 					Commons.windowInit();
 				} finally {
