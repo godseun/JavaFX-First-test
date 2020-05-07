@@ -105,7 +105,7 @@ public class MySqlQuery {
 						+ " AND SENDYN='Y' "
 						+ " AND RESULTYN='' "
 						+ " AND OPENSTATUS='"+status+"' "
-						+ " AND ITEMCD NOT IN (SELECT ITEMCD FROM "+Main.DB+".`"+market+"pro`) LIMIT 1; ";
+						+ " AND ITEMCD NOT IN (SELECT ITEMCD FROM "+Main.DB+".`"+market+"pro`) LIMIT 100; ";
 		// TODO limit 해제하자
 		String resultSet = "";
 		resultSet = ConnectServerInterface.ExecuteSql(sql);
@@ -230,5 +230,155 @@ public class MySqlQuery {
 		}
 		
 		return naverOptionService.getNaverOptionInfoVO();
+	}
+	
+	static public void tranopenUpdateSend(String RESULTYN, String ttime, String itemcd, String rtime, String marketName) {
+
+		String sql = "UPDATE "+Main.DB+".TRANOPEN SET OPENSTATUS='등록완료', SENDYN='I',RESULTYN='" + RESULTYN
+				+ "',RTIME=getdate() WHERE ITEMCD='" + itemcd + "' and TTIME='" + ttime + "' and OPENMARKET='"+marketName+"' and SENDYN='Y' ;";
+
+		ConnectServerInterface.ExecuteSql(sql);
+	}
+	
+	public void selectReg(String itemcd, String OITEMCD, String TTIME, String RTIME, String DTTIME, String STATUS,
+			String ERRMSG, String PPRICE) {
+
+		String sql = "SELECT * FROM "+Main.DB+".NAVERPRO WHERE ITEMCD='" + itemcd + "' ;";
+
+		String sqlResult = "";
+
+		sqlResult = ConnectServerInterface.ExecuteSql(sql);
+		
+		JSONParser jsonParse = new JSONParser();
+		JSONArray jArr;
+		
+		try {
+
+			jArr = (JSONArray) jsonParse.parse(sqlResult);
+
+			String resultCheck = jArr.toString();
+			
+			if(resultCheck.equals("[]")) {
+				System.out.println("insertReg");
+				naverProInsertReg(itemcd, OITEMCD, TTIME, RTIME, DTTIME, STATUS, ERRMSG, PPRICE);
+			} else {
+				System.out.println("updateReg");
+				naverProUpdateReg(itemcd, OITEMCD, TTIME, RTIME, DTTIME, STATUS, ERRMSG, PPRICE);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+		}
+		// System.out.println("json"+json);
+	}
+	
+	public void naverProInsertReg(String itemcd, String OITEMCD, String TTIME, String RTIME, String DTTIME, String STATUS,
+			String ERRMSG, String PPRICE) {
+
+		String sql = "";
+		sql = "INSERT INTO "+Main.DB+".NAVERPRO\n" + "(ITEMCD\n" + ",OITEMCD\n" + ",TTIME\n" + ",RTIME\n"
+				+ ",DTTIME\n" + ",STATUS\n" + ",ERRMSG\n" + ",PPRICE)\n" + "VALUES\n" + "('" + itemcd + "'\n"
+				+ ",'" + OITEMCD + "'\n" + ",'" + TTIME + "'\n" + ",getdate()\n" + ",'" + DTTIME + "'\n" + ",'" + STATUS
+				+ "'\n" + ",'" + ERRMSG + "'\n" + "," + PPRICE + ")\n";
+
+		ConnectServerInterface.ExecuteSql(sql);
+	}
+	
+	public void naverProUpdateReg(String itemcd, String OITEMCD, String TTIME, String RTIME, String DTTIME, String STATUS,
+			String ERRMSG, String PPRICE) {
+
+		String sql = "";
+		sql = "UPDATE "+Main.DB+".NAVERPRO " + " SET TTIME = '" + TTIME + "' " + ",RTIME = getdate() "
+				+ ",DTTIME = '" + DTTIME + "' " + ",STATUS = '" + STATUS + "' " + ",ERRMSG = '" + ERRMSG + "' "
+				+ ",PPRICE = " + PPRICE + " " + " WHERE ITEMCD='" + itemcd + "';";
+
+
+		ConnectServerInterface.ExecuteSql(sql);
+	}
+	
+	static public void naverProUpdateSend(String OITEMCD, String jResult) {
+
+		try {
+
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObj = (JSONObject) jsonParser.parse(jResult);
+			JSONArray jr = (JSONArray) jsonObj.get("content");
+			JSONObject jsonObject = (JSONObject) jr.get(0);
+			long salePrice = 0;
+			String productName = "";
+			String representImageUrl = "";
+			long discountedSalePrice = 0;
+			long sellerImmediateDiscountAmount = 0;
+			long mobileDiscountedSalePrice = 0;
+			long mobileSellerImmediateDiscountAmount = 0;
+			String mobileSellerImmediateDiscountText = "";
+			String bundleGroupName = "";
+			String category1Name = "";
+			String category2Name = "";
+			String category3Name = "";
+			String category4Name = "";
+			String wholeCategoryId = "";
+			if (true == jsonObject.containsKey("salePrice")) {
+				salePrice = (Long) jsonObject.get("salePrice");
+			}
+			if (true == jsonObject.containsKey("productName")) {
+				productName = (String) jsonObject.get("productName");
+			}
+			if (true == jsonObject.containsKey("representImageUrl")) {
+				representImageUrl = (String) jsonObject.get("representImageUrl");
+			}
+			if (true == jsonObject.containsKey("discountedSalePrice")) {
+				discountedSalePrice = (Long) jsonObject.get("discountedSalePrice");
+			}
+			if (true == jsonObject.containsKey("sellerImmediateDiscountAmount")) {
+				sellerImmediateDiscountAmount = (Long) jsonObject.get("sellerImmediateDiscountAmount");
+			}
+			if (true == jsonObject.containsKey("mobileDiscountedSalePrice")) {
+				mobileDiscountedSalePrice = (Long) jsonObject.get("mobileDiscountedSalePrice");
+			}
+			if (true == jsonObject.containsKey("mobileSellerImmediateDiscountAmount")) {
+				mobileSellerImmediateDiscountAmount = (Long) jsonObject.get("mobileSellerImmediateDiscountAmount");
+			}
+			if (true == jsonObject.containsKey("mobileSellerImmediateDiscountText")) {
+				mobileSellerImmediateDiscountText = (String) jsonObject.get("mobileSellerImmediateDiscountText");
+			}
+			if (true == jsonObject.containsKey("bundleGroupName")) {
+				bundleGroupName = (String) jsonObject.get("bundleGroupName");
+			}
+			if (true == jsonObject.containsKey("category1Name")) {
+				category1Name = (String) jsonObject.get("category1Name");
+			}
+			if (true == jsonObject.containsKey("category2Name")) {
+				category2Name = (String) jsonObject.get("category2Name");
+			}
+			if (true == jsonObject.containsKey("category3Name")) {
+				category3Name = (String) jsonObject.get("category3Name");
+			}
+			if (true == jsonObject.containsKey("category4Name")) {
+				category4Name = (String) jsonObject.get("category4Name");
+			}
+			if (true == jsonObject.containsKey("wholeCategoryId")) {
+				wholeCategoryId = (String) jsonObject.get("wholeCategoryId");
+			}
+
+			String sql = "UPDATE " + Main.DB + ".NAVERPRO\n" + "   SET PPRICE = " + salePrice + "\n"
+					+ "      ,productName = '" + productName + "'\n" + "      ,representImageUrl = '"
+					+ representImageUrl + "'\n" + "      ,discountedSalePrice = " + discountedSalePrice + "\n"
+					+ "      ,sellerImmediateDiscountAmount = " + sellerImmediateDiscountAmount + "\n"
+					+ "      ,mobileDiscountedSalePrice = " + mobileDiscountedSalePrice + "\n"
+					+ "      ,mobileSellerImmediateDiscountAmount = " + mobileSellerImmediateDiscountAmount + "\n"
+					+ "      ,mobileSellerImmediateDiscountText = '" + mobileSellerImmediateDiscountText + "'\n"
+					+ "      ,bundleGroupName = '" + bundleGroupName + "'\n" + "      ,category1Name = '"
+					+ category1Name + "'\n" + "      ,category2Name = '" + category2Name + "'\n"
+					+ "      ,category3Name = '" + category3Name + "'\n" + "      ,category4Name = '"
+					+ category4Name + "'\n" + "      ,wholeCategoryId = '" + wholeCategoryId + "'\n"
+					+ " WHERE OITEMCD='" + OITEMCD + "';";
+
+			ConnectServerInterface.ExecuteSql(sql);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

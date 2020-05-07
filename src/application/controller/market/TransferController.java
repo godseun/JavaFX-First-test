@@ -10,6 +10,7 @@ import application.Main;
 import application.model.Commons;
 import application.model.commons.MySqlQuery;
 import application.model.vo.ProductVO;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ import javafx.scene.control.TextArea;
 public class TransferController implements Initializable{
 	
 	private Thread thread;
+	private Thread setTextThread;
 	
 	private Main main;
 	public void setMainApp(Main main) {
@@ -30,7 +32,7 @@ public class TransferController implements Initializable{
 	@FXML
 	public Button marketUpBtn,marketDownBtn,startBtn,pauseBtn,stopBtn;
 	@FXML
-	public static TextArea textArea;
+	public TextArea logTextArea;
 	@FXML
 	public ListView<String> useingMarketListView,notUsingMarketListView;
 	@FXML
@@ -81,6 +83,8 @@ public class TransferController implements Initializable{
 			return;
 		}
 		startBtn.setDisable(true);
+		Main.startBtnStat = true;
+		setTextAreaWrite("thread 시작");
 		checkBoxDisabled();
 		disableAfterComparingMarketAndDefaultDelCodeInUse();
 		startLogic();
@@ -100,6 +104,8 @@ public class TransferController implements Initializable{
 	private void StopBtnClick() {
 		if(thread==null) return;
 		startBtn.setDisable(false);
+		Main.startBtnStat = false;
+		setTextAreaWrite("종료중 .. 작업이 끝나면 종료됩니다. 기다려주세요");
 		checkBoxEnabled();
 	}
 	@FXML
@@ -146,22 +152,50 @@ public class TransferController implements Initializable{
 				stopLogic();
 			}
 		});
-
 		thread.setDaemon(true);
 		thread.start();
+		
+		setTextThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					if(!Main.setTextArea.equals("")) {
+						Platform.runLater(()->{
+							setTextAreaWrite(Main.setTextArea);
+							Main.setTextArea = "";
+						});
+					}
+				}
+			}
+		});
+		setTextThread.setDaemon(true);
+		setTextThread.start();
 	}
 	
 	private void stopLogic() {
 		thread.interrupt();
 		thread = null;
+		setTextThread.interrupt();
+		setTextThread = null;
+		setTextAreaWrite("thread 종료");
 	}
 	
 	private void marketAndFunctionTransfer() {
 		for(String marketName : usingMarketList) {
-			if(prodInsert.isSelected()) prodRegForMarket(marketName);
-			else if(prodUpdate.isSelected()) prodUpdateForMarket(marketName);
-			else if(prodStopSale.isSelected()) prodStopSaleForMarket(marketName);
-			else if(prodStartSale.isSelected()) prodStartSaleForMarket(marketName);
+			if(prodInsert.isSelected()) {
+				prodRegForMarket(marketName);
+			} else if(prodUpdate.isSelected()) {
+				prodUpdateForMarket(marketName);
+			} else if(prodStopSale.isSelected()) {
+				prodStopSaleForMarket(marketName);
+			} else if(prodStartSale.isSelected()) {
+				prodStartSaleForMarket(marketName);
+			}
 		}
 	}
 	// TODO CRUD 로직 구현중
@@ -209,8 +243,10 @@ public class TransferController implements Initializable{
 		ArrayList<ProductVO> prodList = MySqlQuery.SelectProdInfoArrayMap(marketName, status);
 		switch (marketName) {
 			case "네이버":
-				if(prodList != null && !prodList.isEmpty())
-					NaverController.individualProductRegistration(prodList, "naver");
+				if(prodList != null && !prodList.isEmpty()) {
+					NaverController naverController = new NaverController();
+					naverController.individualProductRegistration(prodList, "naver");
+				}
 				break;
 			case "쿠팡": break;
 			case "티몬": break;
@@ -229,7 +265,6 @@ public class TransferController implements Initializable{
 			String marketList = "";
 			for(String marketName : usingMarketList) {
 				if(Main.delCodeMap.get(marketName) == null) {
-					// TODO textArea에 사용하려는 마켓에 택배사코드 디폴트설정 안되어있다고 알리고 로직에서 제외하기
 					list.add(marketName);
 				}
 			}
@@ -244,10 +279,10 @@ public class TransferController implements Initializable{
 		}
 	}
 	
-	static public void setTextAreaWrite(String text) {
+	public void setTextAreaWrite(String text) {
 		Calendar calendar = Calendar.getInstance();
 		SimpleDateFormat dateForm = new SimpleDateFormat("MM-dd HH:mm:ss");
 		
-		textArea.appendText(dateForm.format(calendar.getTime())+" > "+text+"\n");
+		logTextArea.appendText(dateForm.format(calendar.getTime())+" > "+text+"\n");
 	}
 }

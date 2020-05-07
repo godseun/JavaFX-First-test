@@ -95,6 +95,17 @@ public class Commons {
 		}
 	}
 	
+	public static String getContentImage(String path, String defaultPath) {
+		
+		String patt = "<div style='text-align: center'><div style='text-align: center'><img width='100%' height='100%' style='border: currentColor; border-image: none' alt='http://contents.cretec.kr/n2009ebook/n1280/catimage/2034/212.jpg' src='http://contents.cretec.kr/n2009ebook/n1280/catimage/2034/212.jpg' /></div><br /></div><br />";
+		String content = patt.replaceAll("http://contents.cretec.kr/n2009ebook/n1280/catimage/2034/212.jpg", path);
+		
+		if (path == null || path.equals("")) {
+			content = defaultPath;
+		}
+		return content;
+	}
+	
 	public static String getmImagePhoneartAtti(String url) {
 		InputStream is = null;
 		FileOutputStream fos = null;

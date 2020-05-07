@@ -19,7 +19,7 @@
                         <Button fx:id="startBtn" layoutX="1028.0" layoutY="48.0" onMouseClicked="#StartBtnClick" prefHeight="29.0" prefWidth="82.0" text="시작" />
                         <Button fx:id="pauseBtn" layoutX="1121.0" layoutY="48.0" onMouseClicked="#PauseBtnClick" prefHeight="29.0" prefWidth="82.0" text="일시중지" />
                         <Button fx:id="stopBtn" layoutX="1215.0" layoutY="48.0" onMouseClicked="#StopBtnClick" prefHeight="29.0" prefWidth="82.0" text="종료" />
-                        <TextArea fx:id="textArea" editable="false" layoutX="273.0" layoutY="84.0" prefHeight="795.0" prefWidth="1024.0" />
+                        <TextArea fx:id="logTextArea" editable="false" layoutX="273.0" layoutY="84.0" prefHeight="795.0" prefWidth="1024.0" />
                         <CheckBox fx:id="prodInsert" layoutX="652.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="상품등록" />
                         <CheckBox fx:id="prodUpdate" layoutX="731.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="상품수정" />
                         <CheckBox fx:id="prodStopSale" layoutX="810.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="판매중지" />

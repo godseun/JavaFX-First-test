@@ -33,6 +33,9 @@ public class Main extends Application {
 	public static Map<String, LoginVO> loginMap;
 	public static Map<String, DeliveryCodeVO> delCodeMap;
 	
+	public static String setTextArea = "";
+	public static boolean startBtnStat = true;
+	
 	private Stage primaryStage;
 	private AnchorPane layout;
 
