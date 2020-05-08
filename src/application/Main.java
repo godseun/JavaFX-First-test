@@ -111,8 +111,8 @@ public class Main extends Application {
 		// TODO DB연결실패 로직 만들어야함
 		openDriver();
 		
-		loginMap = MySqlQuery.SelectLoginInfoMap();
-		delCodeMap = MySqlQuery.SelectDelcompcodeInfoArrayMap();
+		loginMap = MySqlQuery.selectLoginInfoMap();
+		delCodeMap = MySqlQuery.selectDelcompcodeInfoArrayMap();
 	}
 	
 	public static void main(String[] args) {

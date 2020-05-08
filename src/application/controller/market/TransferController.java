@@ -162,7 +162,6 @@ public class TransferController implements Initializable{
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
 					}
 					if(!Main.setTextArea.equals("")) {
 						Platform.runLater(()->{
@@ -226,8 +225,15 @@ public class TransferController implements Initializable{
 		}
 	}
 	private void prodUpdateForMarket(String marketName) {
+		String status = "수정중";
+		ArrayList<ProductVO> prodList = MySqlQuery.selectProdInfoArrayMap(marketName, status);
 		switch (marketName) {
-			case "네이버": break;
+			case "네이버": 
+				if(prodList != null && !prodList.isEmpty()) {
+					NaverController naverController = new NaverController();
+					// TODO: 네이버상품등록 작성중
+				}
+				break;
 			case "쿠팡": break;
 			case "티몬": break;
 			case "위메프": break;
@@ -240,7 +246,7 @@ public class TransferController implements Initializable{
 	}
 	private void prodRegForMarket(String marketName) {
 		String status = "등록중";
-		ArrayList<ProductVO> prodList = MySqlQuery.SelectProdInfoArrayMap(marketName, status);
+		ArrayList<ProductVO> prodList = MySqlQuery.selectProdInfoArrayMap(marketName, status);
 		switch (marketName) {
 			case "네이버":
 				if(prodList != null && !prodList.isEmpty()) {
@@ -278,7 +284,7 @@ public class TransferController implements Initializable{
 			}
 		}
 	}
-	
+
 	public void setTextAreaWrite(String text) {
 		Calendar calendar = Calendar.getInstance();
 		SimpleDateFormat dateForm = new SimpleDateFormat("MM-dd HH:mm:ss");

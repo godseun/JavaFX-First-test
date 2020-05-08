@@ -175,7 +175,7 @@ public class NaverCommon {
 	
 	public void prodOptionInput(String prodId) {
 		String match = "[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]";
-		ArrayList<NaverOptionVO> returnOp = MySqlQuery.searchOption(prodId);
+		ArrayList<NaverOptionVO> returnOp = MySqlQuery.naverSearchOption(prodId);
 		
 		String optionQty = "999";
 		try {
@@ -502,16 +502,15 @@ public class NaverCommon {
 		String OITEMCD = Main.driver.findElement(By.xpath(
 				"/html/body/ui-view[1]/div[3]/div/div[3]/div/ui-view/div/ui-view[1]/div[2]/form/div[1]/div/ul/li[1]/div/div/div[2]/textarea"))
 				.getAttribute("value");
-		System.out.println("id" + OITEMCD);
+//		System.out.println("id" + OITEMCD);
 		
 		return OITEMCD;
 	}
 	
-	public String getProdInfoAfterProdInput(String oitemcd) {
+	public String getProdInfoAfterProdInput(String searchKeywordType, String searchKeyword) {
 
-		waitForProdSearchPage("이동");
-		
-		String s2 = "var data = {\r\n" + "searchKeywordType:'CHANNEL_PRODUCT_NO',\r\n" + "searchKeyword:'" + oitemcd
+		String s2 = "var data = {\r\n" + "searchKeywordType:'"+(searchKeywordType.equals("oitemcd")?"CHANNEL_PRODUCT_NO":"SELLER_CODE")+"',\r\n" 
+				+ "searchKeyword:'" + searchKeyword
 				+ "',\r\n" + "productName:'',\r\n" + "modelName:'',\r\n" + "manufacturerName:'',\r\n"
 				+ "brandName:'',\r\n" + "searchPaymentType:'ALL',\r\n" + "searchPeriodType:'PROD_REG_DAY',\r\n"
 				+ "deliveryAttributeType:'',\r\n" + "productKindType:'',\r\n" + "fromDate:'',\r\n" + "toDate:'',\r\n"
@@ -535,13 +534,13 @@ public class NaverCommon {
 			Thread.sleep(1000);
 			((JavascriptExecutor) Main.driver).executeAsyncScript(s2);
 		} catch (ScriptTimeoutException e) {
-			System.out.println("prodInfo suc ");
+//			System.out.println("prodInfo suc ");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		WebElement sizeEle = Main.driver.findElement(By.id("interceptedResponse"));
 		String beforeCount = sizeEle.getText();
-		System.out.println("content:" + beforeCount);
+//		System.out.println("content:" + beforeCount);
 		// wait.until(ExpectedConditions.not(ExpectedConditions.textMatches(
 		// By.id("interceptedResponse"),
 		// Pattern.compile(beforeCount))));
@@ -578,7 +577,26 @@ public class NaverCommon {
 		return phoneNo;
 	}
 	
-	public void waitForProdInsertPage(String prodId) {
+	public boolean marketForItemcdCheck(String itemcd) {
+		
+		String response = "";
+		response = getProdInfoAfterProdInput("itemcd",itemcd);
+		
+		JSONParser JP = new JSONParser();
+		JSONObject jObj;
+		
+		try {
+			jObj = (JSONObject) JP.parse(response);
+			if(jObj.get("total").toString().equals("0")) {
+				return true;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public void waitForProdInsertPage(String prodId, String marketName) {
 		int cnt = 0;
 		try {
 			while(true) {
@@ -592,11 +610,11 @@ public class NaverCommon {
 			}
 			waitForNaverAjax();
 		} catch (Exception e) {
-			Commons.setTextAreaWrite("itemcd :["+prodId+"] 상품등록 페이지 이동 중 에러");
+			Commons.setTextAreaWrite(marketName+" 상품등록 페이지 이동 중 에러 itemcd :["+prodId+"] ");
 		}
 	}
 	
-	public void waitForProdSearchPage(String prodId) {
+	public void waitForProdSearchPage(String marketName) {
 		int cnt = 0;
 		try {
 			while(true) {
@@ -616,11 +634,11 @@ public class NaverCommon {
 				
 			}
 		} catch (Exception e) {
-			Commons.setTextAreaWrite("itemcd :["+prodId+"] 상품검색 페이지 이동 중 에러");
+			Commons.setTextAreaWrite(marketName+" 상품검색 페이지 이동 중 에러 ");
 		}
 	}
 	
-	public void waitForProdUpdatePage(String prodId, String naverProdId) {
+	public void waitForProdUpdatePage(String prodId, String naverProdId, String marketName) {
 		int cnt = 0;
 		try {
 			while(true) {
@@ -634,7 +652,7 @@ public class NaverCommon {
 			}
 			waitForNaverAjax();
 		} catch (Exception e) {
-			Commons.setTextAreaWrite("itemcd :["+prodId+"] 상품수정 페이지 이동 중 에러");
+			Commons.setTextAreaWrite(marketName+" 상품수정 페이지 이동 중 에러 itemcd :["+prodId+"] ");
 		}
 	}
 	
