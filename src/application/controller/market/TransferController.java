@@ -185,6 +185,7 @@ public class TransferController implements Initializable{
 	}
 	
 	private void marketAndFunctionTransfer() {
+		// TODO: #params usingMarketList 는 모든 리스트다. 각각의 스레드로 돌도록만들자 
 		for(String marketName : usingMarketList) {
 			if(prodInsert.isSelected()) {
 				prodRegForMarket(marketName);
